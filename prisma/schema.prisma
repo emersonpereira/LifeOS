@@ -1,0 +1,62 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  completed   Boolean  @default(false)
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Habit {
+  id          Int      @id @default(autoincrement())
+  name        String
+  frequency   String   @default("DAILY") // DAILY, WEEKLY
+  createdAt   DateTime @default(now())
+  completions HabitCompletion[]
+}
+
+model HabitCompletion {
+  id      Int      @id @default(autoincrement())
+  date    DateTime
+  habitId Int
+  habit   Habit    @relation(fields: [habitId], references: [id])
+
+  @@unique([habitId, date])
+}
